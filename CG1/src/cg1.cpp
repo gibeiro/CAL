@@ -1,6 +1,6 @@
 #include "cg1.h"
 #include <fstream>
-#include <string>
+#include <cstring>
 #include <stdlib.h>
 
 cg1::cg1(const char* nodes_file, const char* roads_file, const char* subroads_file){
@@ -11,17 +11,49 @@ cg1::cg1(const char* nodes_file, const char* roads_file, const char* subroads_fi
 	ifstream file;
 	file.open(nodes_file);
 
-	string tmp;
+	char tmp1[128];
+	char *tmp2;
 	int id,x,y;
-	Vertex<int> node();
 
 	while(!file.eof()){
 
-		getline(file,tmp);
+		file.getline(tmp1,128);
 
-		//id = atoi( tmp.find() );
+		tmp2 = strtok(tmp1,";");
+		id = atoi(tmp2);
+
+		tmp2 = strtok(NULL,";");
+		x = atoi(tmp2);
+
+		tmp2 = strtok(NULL,";");
+		y = atoi(tmp2);
+
+		graph->addVertex(id);
 
 	}
+
+	file.close();
+
+	file.open(roads_file);
+
+	while(!file.eof()){
+
+			file.getline(tmp1,128);
+
+			tmp2 = strtok(tmp1,";");
+			id = atoi(tmp2);
+
+			tmp2 = strtok(NULL,";");
+			x = atoi(tmp2);
+
+			tmp2 = strtok(NULL,";");
+			y = atoi(tmp2);
+
+			graph->addVertex(id);
+
+		}
+
+	file.close();
 
 }
 
