@@ -5,6 +5,7 @@
 #include <sstream>
 #include "graph.h"
 #include "graphviewer.h"
+#include "cg1.h"
 
 /*
 void exercicio1();
