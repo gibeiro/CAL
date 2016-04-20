@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstring>
 #include <stdlib.h>
+#include <vector>
 
 cg1::cg1(const char* nodes_file, const char* roads_file, const char* subroads_file){
 
@@ -14,6 +15,8 @@ cg1::cg1(const char* nodes_file, const char* roads_file, const char* subroads_fi
 	char tmp1[128];
 	char *tmp2;
 	int id,x,y;
+	string name;
+	vector<Edge<int>> edges;
 
 	while(!file.eof()){
 
@@ -28,7 +31,7 @@ cg1::cg1(const char* nodes_file, const char* roads_file, const char* subroads_fi
 		tmp2 = strtok(NULL,";");
 		y = atoi(tmp2);
 
-		graph->addVertex(id);
+		graph->addVertex(Vertex<int>(id,x,y));
 
 	}
 
@@ -44,11 +47,15 @@ cg1::cg1(const char* nodes_file, const char* roads_file, const char* subroads_fi
 			id = atoi(tmp2);
 
 			tmp2 = strtok(NULL,";");
-			x = atoi(tmp2);
+			name = tmp2;
 
 			tmp2 = strtok(NULL,";");
-			y = atoi(tmp2);
 
+			if(strcmp(tmp2,"True") == 0){
+				graph
+			}
+
+			//edges.pushback(Vertex);
 			graph->addVertex(id);
 
 		}

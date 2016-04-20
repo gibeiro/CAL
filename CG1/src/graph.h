@@ -30,9 +30,34 @@ class Vertex {
 	bool processing;
 	int indegree;
 	int dist;
+	int x,y;
+
+
 public:
 
 	Vertex(T in);
+	Vertex(const Vertex<T> &node){
+		visited = node.visited;
+		processing = node.processing;
+		indegree = node.indegree;
+		dist = node.dist;
+		x = node.x;
+		y = node.y;
+		adj = node.adj;
+		info = node.info;
+		path = node.path;
+
+	};
+	Vertex(T in, const int &_x, const int &_y){
+		in = info;
+		x = _x;
+		y = _y;
+		visited = false;
+		processing = false;
+		indegree= 0;
+		dist = 0;
+		path = NULL;
+	};
 	friend class Graph<T>;
 
 	void addEdge(Vertex<T> *dest, double w);
@@ -50,9 +75,9 @@ public:
 
 template <class T>
 struct vertex_greater_than {
-    bool operator()(Vertex<T> * a, Vertex<T> * b) const {
-        return a->getDist() > b->getDist();
-    }
+	bool operator()(Vertex<T> * a, Vertex<T> * b) const {
+		return a->getDist() > b->getDist();
+	}
 };
 
 
@@ -74,6 +99,8 @@ bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
 template <class T>
 Vertex<T>::Vertex(T in): info(in), visited(false), processing(false), indegree(0), dist(0) {
 	path = NULL;
+	y= 0;
+	x=0;
 }
 
 
@@ -107,10 +134,18 @@ int Vertex<T>::getIndegree() const {
 
 template <class T>
 class Edge {
+	T id;
+	string name;
 	Vertex<T> * dest;
 	double weight;
 public:
 	Edge(Vertex<T> *d, double w);
+	Edge(Vertex<T> *d, double w, const string name, T info){
+		dest = d;
+		weight = w;
+		this->name = name;
+		id = info;
+	};
 	friend class Graph<T>;
 	friend class Vertex<T>;
 };
@@ -130,7 +165,9 @@ class Graph {
 
 public:
 	bool addVertex(const T &in);
+	bool addVertex(const Vertex<T> &node);
 	bool addEdge(const T &sourc, const T &dest, double w);
+	bool addEdge(const T &sourc, const T &dest, double w, string name, bool bothWays, T info);
 	bool removeVertex(const T &in);
 	bool removeEdge(const T &sourc, const T &dest);
 	vector<T> dfs() const;
@@ -183,6 +220,17 @@ bool Graph<T>::addVertex(const T &in) {
 }
 
 template <class T>
+bool Graph<T>::addVertex(const Vertex<T> &node) {
+	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
+	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
+	for (; it!=ite; it++)
+		if ((*it)->info == node.getInfo()) return false;
+	Vertex<T> *v1 = new Vertex<T>(node);
+	vertexSet.push_back(v1);
+	return true;
+}
+
+template <class T>
 bool Graph<T>::removeVertex(const T &in) {
 	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
 	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
@@ -216,14 +264,42 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	Vertex<T> *vS, *vD;
 	while (found!=2 && it!=ite ) {
 		if ( (*it)->info == sourc )
-			{ vS=*it; found++;}
+		{ vS=*it; found++;}
 		if ( (*it)->info == dest )
-			{ vD=*it; found++;}
+		{ vD=*it; found++;}
 		it ++;
 	}
 	if (found!=2) return false;
 	vD->indegree++;
 	vS->addEdge(vD,w);
+
+	return true;
+}
+
+template <class T>
+bool Graph<T>::addEdge(const T &sourc, const T &dest, double w, string name, bool bothWays, T info) {
+	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
+	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
+	int found=0;
+	Vertex<T> *vS, *vD;
+	while (found!=2 && it!=ite ) {
+		if ( (*it)->info == sourc )
+		{ vS=*it; found++;}
+		if ( (*it)->info == dest )
+		{ vD=*it; found++;}
+		it ++;
+	}
+	if (found!=2) return false;
+	if(bothWays){
+		vD->indegree++;
+		vS->indegree++;
+		vS->addEdge(vD,w, name, info);
+		vD->addEdge(vS,w, name, info);
+	}
+	else{
+		vD->indegree++;
+		vS->addEdge(vD,w);
+	}
 
 	return true;
 }
@@ -236,9 +312,9 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
 	Vertex<T> *vS, *vD;
 	while (found!=2 && it!=ite ) {
 		if ( (*it)->info == sourc )
-			{ vS=*it; found++;}
+		{ vS=*it; found++;}
 		if ( (*it)->info == dest )
-			{ vD=*it; found++;}
+		{ vD=*it; found++;}
 		it ++;
 	}
 	if (found!=2)
@@ -261,8 +337,8 @@ vector<T> Graph<T>::dfs() const {
 	vector<T> res;
 	it=vertexSet.begin();
 	for (; it !=ite; it++)
-	    if ( (*it)->visited==false )
-	    	dfs(*it,res);
+		if ( (*it)->visited==false )
+			dfs(*it,res);
 	return res;
 }
 
@@ -273,9 +349,9 @@ void Graph<T>::dfs(Vertex<T> *v,vector<T> &res) const {
 	typename vector<Edge<T> >::iterator it= (v->adj).begin();
 	typename vector<Edge<T> >::iterator ite= (v->adj).end();
 	for (; it !=ite; it++)
-	    if ( it->dest->visited == false ){
-	    	dfs(it->dest, res);
-	    }
+		if ( it->dest->visited == false ){
+			dfs(it->dest, res);
+		}
 }
 
 template <class T>
@@ -378,8 +454,8 @@ void Graph<T>::dfsVisit() {
 		(*it)->visited=false;
 	it=vertexSet.begin();
 	for (; it !=ite; it++)
-	    if ( (*it)->visited==false )
-	    	dfsVisit(*it);
+		if ( (*it)->visited==false )
+			dfsVisit(*it);
 }
 
 template <class T>
@@ -390,9 +466,9 @@ void Graph<T>::dfsVisit(Vertex<T> *v) {
 	typename vector<Edge<T> >::iterator ite= (v->adj).end();
 	for (; it !=ite; it++) {
 		if ( it->dest->processing == true) numCycles++;
-	    if ( it->dest->visited == false ){
-	    	dfsVisit(it->dest);
-	    }
+		if ( it->dest->visited == false ){
+			dfsVisit(it->dest);
+		}
 	}
 	v->processing = false;
 }
