@@ -30,10 +30,12 @@ class Vertex {
 	bool processing;
 	int indegree;
 	int dist;
-	int x,y;
+
 
 
 public:
+
+	int x,y;
 
 	Vertex(T in);
 	Vertex(const Vertex<T> &node){
@@ -61,6 +63,9 @@ public:
 	friend class Graph<T>;
 
 	void addEdge(Vertex<T> *dest, double w);
+	void addEdge(Vertex* vD, double w, string name,T info){
+		adj.push_back(Edge<T>(vD,w,name,info));
+	};
 	bool removeEdgeTo(Vertex<T> *d);
 
 	T getInfo() const;
@@ -134,11 +139,14 @@ int Vertex<T>::getIndegree() const {
 
 template <class T>
 class Edge {
-	T id;
+
 	string name;
+
+
+public:
+	T id;
 	Vertex<T> * dest;
 	double weight;
-public:
 	Edge(Vertex<T> *d, double w);
 	Edge(Vertex<T> *d, double w, const string name, T info){
 		dest = d;

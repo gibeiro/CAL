@@ -21,6 +21,18 @@ public:
 
 };
 
+class road{
+	public:
+		string name;
+		bool isBothWays;
+		int id;
+		road():name(0),isBothWays(0),id(0){};
+		road(string s, bool b, int i):name(s),isBothWays(b),id(i){};
+		bool operator==(const int &id){
+			return this->id == id;
+		};
+
+	};
 
 
 #endif /* SRC_CG1_H_ */
