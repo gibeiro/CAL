@@ -230,7 +230,7 @@ void exercicio3()
 */
 int main(){
 
-	std::cout << "Hello World\n";
+	cg1 graph("res/nodes.txt","res/roads.txt","res/subroads.txt");
 
 	return 0;
 

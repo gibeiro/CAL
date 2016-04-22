@@ -35,7 +35,7 @@ class Vertex {
 
 public:
 
-	int x,y;
+	double x,y;
 
 	Vertex(T in);
 	Vertex(const Vertex<T> &node){
