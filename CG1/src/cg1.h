@@ -34,6 +34,8 @@ public:
 	bool readRoads(const char* file);
 	bool readSubroads(const char* file);
 
+	bool addNodes();
+
 	cg1(const char* nodes_file, const char* roads_file, const char* subroads_file);
 	~cg1();
 

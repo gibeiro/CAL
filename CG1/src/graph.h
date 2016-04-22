@@ -24,7 +24,7 @@ const int INT_INFINITY = INT_MAX;
 
 template <class T>
 class Vertex {
-	T info;
+
 	vector<Edge<T>  > adj;
 	bool visited;
 	bool processing;
@@ -34,7 +34,7 @@ class Vertex {
 
 
 public:
-
+	T info;
 	double x,y;
 
 	Vertex(T in);
@@ -73,6 +73,11 @@ public:
 
 	int getDist() const;
 	int getIndegree() const;
+
+	vector<Edge<T> > getEdges() const{
+		return adj;
+	}
+
 
 	Vertex* path;
 };
@@ -139,11 +144,8 @@ int Vertex<T>::getIndegree() const {
 
 template <class T>
 class Edge {
-
-	string name;
-
-
 public:
+	string name;
 	T id;
 	Vertex<T> * dest;
 	double weight;

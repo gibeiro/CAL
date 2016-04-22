@@ -18,6 +18,8 @@ cg1::cg1(const char* nodes_file, const char* roads_file, const char* subroads_fi
 	gv = new GraphViewer(800,600,1);
 	gv->createWindow(800, 600);
 
+	addNodes();
+
 }
 
 cg1::~cg1(){
@@ -189,4 +191,38 @@ bool cg1::readSubroads(const char* file){
 	printf("Subroads successfully added!\n");
 
 	return 1;
+}
+
+
+bool cg1::addNodes(){
+
+	std::vector<Vertex<int> *>::const_iterator it;
+	std::vector<Edge<int> >::const_iterator it2;
+
+	vector<Vertex<int> *> nodes = graph->getVertexSet();
+	vector<Edge<int> > tmp;
+
+	it = nodes.begin();
+
+	while(it != nodes.end())
+		gv->addNode((*it)->info,(int)(*it)->x,(int)(*it)->y);
+
+	it = nodes.begin();
+
+	while(it != nodes.end()){
+
+		tmp = (*it)->getEdges();
+
+		it2 = tmp.begin();
+
+		while(it2 != tmp.end()){
+			gv->addEdge(it2->id, (*it)->info, it2->dest->info, EdgeType::DIRECTED);
+			gv->setEdgeWeight(it2->id,it2->weight);
+			gv->setVertexLabel(it2->id,it2->name);
+		}
+	}
+
+
+	gv->rearrange();
+
 }
