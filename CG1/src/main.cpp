@@ -230,7 +230,7 @@ void exercicio3()
 */
 int main(){
 
-	cg1 graph("res/nodes.txt","res/roads.txt","res/subroads.txt");
+	cg1 graph("res/nodes.txt","res/roads.txt","res/subroads.txt","res/landmarks.txt","res/clients.txt");
 
 	return 0;
 

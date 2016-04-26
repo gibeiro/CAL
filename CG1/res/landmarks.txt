@@ -1,0 +1,8 @@
+Aeroporto Sa Carneiro;0;
+Porto Palacio Hotel;3;
+Hotel Ibis Gaia;9;
+Hotel Novotel Gaia;24;
+Hotel Internacional Porto;20;
+Hotel Vila Gale Porto;16;
+Hotel Porto-Mar;13;
+Star Inn Porto;7;
