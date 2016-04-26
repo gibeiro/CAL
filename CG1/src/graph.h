@@ -231,6 +231,32 @@ public:
 
 		return true;
 	};
+	T getEdge(const T &src, const T &dest){
+		typename vector<Vertex<T>*>::const_iterator it= vertexSet.begin();
+		typename vector<Edge<T> >::const_iterator it2;
+		vector<Edge<T> > v;
+
+
+		while(it!= vertexSet.end()){
+
+			if((*it)->info == src){
+				v = (*it)->adj;
+				it2 = v.begin();
+
+				while(it2 != v.end()){
+
+					if(it2->dest->info == dest)
+						return it2->id;
+					it2++;
+				}
+
+				return -1;
+			}
+
+			it++;
+		}
+		return -1;
+	}
 	bool removeVertex(const T &in);
 	bool removeEdge(const T &sourc, const T &dest);
 	vector<T> dfs() const;
@@ -824,7 +850,7 @@ double calcDist(const Vertex<T>*a, const Vertex<T>*b){
 	double u = sin( (a->x_rad - b->x_rad)/2 );
 	double v = sin( (a->y_rad - b->y_rad)/2 );
 
-	  return 2.0 * EARTH_RAD * asin(sqrt(u * u + cos(a->x_rad) * cos(b->x_rad) * v * v));
+	return 2.0 * EARTH_RAD * asin(sqrt(u * u + cos(a->x_rad) * cos(b->x_rad) * v * v));
 
 }
 

@@ -30,14 +30,20 @@ cg1::cg1(const char* nodes_file,
 
 	addNodes();
 	addEdges();
-	std::vector<unsigned int> v;
+
+	vector<unsigned int> v;
 	v.push_back(0);
-	v.push_back(1);
-	v.push_back(6);
 	v.push_back(5);
+	v.push_back(10);
+	v.push_back(11);
+	v.push_back(6);
+	v.push_back(7);
+	v.push_back(2);
+	v.push_back(1);
 	v.push_back(0);
 
-	displayPath(v);
+
+	displayPath(graph->getPath(0,24));
 	getchar();
 	//sleep(100);
 
@@ -239,8 +245,11 @@ bool cg1::readLandmarks(const char* file){
 		tmp2 = strtok(tmp1,";");
 		tmp.name = std::string(tmp2);
 
-		tmp2 = strtok(tmp1,";");
+		tmp2 = strtok(NULL,";");
 		tmp.node = (unsigned int)atoi(tmp2);
+
+		printf("Landmark: %s\nNode: %d\n\n",tmp.name.c_str(),tmp.node);
+
 
 		if(fst_it){
 			fst_it = 0;
@@ -310,6 +319,9 @@ bool cg1::readClients(const char* file){
 
 void cg1::distrClients(){
 
+
+
+	/*
 	if(available_vehicles == 0 || clients.size() == 0)
 		return;
 
@@ -365,7 +377,7 @@ void cg1::distrClients(){
 		}
 
 	}
-
+	 */
 	/*
 	vector<client>::iterator it = clients.begin() + 1;
 
@@ -459,13 +471,24 @@ time null_time(){
 
 void cg1::addNodes(){
 	vector<Vertex<unsigned int>* > v = graph->getVertexSet();
-	vector<Vertex<unsigned int>* >::const_iterator it1;
+	vector<Vertex<unsigned int>* >::const_iterator it1 = v.begin();
+	vector<landmark >::const_iterator it2 = landmarks.begin();
 
-	it1 = v.begin();
 	while(it1 != v.end()){
 		gv->addNode((*it1)->getInfo());
 		it1++;
 	}
+
+	gv->setVertexColor(airport.node,MAGENTA);
+	gv->setVertexLabel(airport.node,airport.name);
+
+	while(it2 != landmarks.end()){
+		gv->setVertexColor(it2->node,RED);
+		gv->setVertexLabel(it2->node,it2->name);
+		it2++;
+	}
+
+
 
 
 }
@@ -498,42 +521,11 @@ void cg1::addEdges(){
 }
 
 
-void cg1::displayPath(vector<unsigned int> v){
-
-	unsigned int edge_id;
-	int i,j,n;
-	vector<unsigned int>::const_iterator it = v.begin() + 1;
-
-	while(it != v.end()){
-
-		i = (int)*(it - 1);
-		j = (int)*it;
-		n = i - j;
-
-		if( abs(n) == 1 ){
-
-			if(j < i)
-				edge_id = j%4 + 60;
-			if(j > i)
-				edge_id = i%4 + 20;
-			if(j == i)
-				continue;
-		}
-
-		if( abs(n) == 5 ){
-
-			if(j < i)
-				edge_id = j + 40;
-			if(j > i)
-				edge_id = i;
-			if(j == i)
-				continue;
-
-		}
-
-		gv->setEdgeColor(edge_id, BLUE);
-
-		it++;
+void cg1::displayPath(const vector<unsigned int> &v){
+	gv->setVertexColor(v[0],BLUE);
+	for(size_t i = 1; i < v.size(); i++){
+		gv->setVertexColor(v[i],BLUE);
+		gv->setEdgeColor(graph->getEdge(v[i-1],v[i]), BLUE);
+		gv->setEdgeThickness(graph->getEdge(v[i-1],v[i]),5);
 	}
-
 }

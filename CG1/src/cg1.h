@@ -33,7 +33,7 @@ public:
 	unsigned long NIF;
 	landmark destination;
 	time arrival;
-	bool operator<(const client c){
+	bool operator<(const client &c) const{
 		if(arrival.h < c.arrival.h)
 			return 1;
 		else if(arrival.h == c.arrival.h){
@@ -101,7 +101,7 @@ public:
 	};
 
 	time calcTime(vehicle &c);
-	void displayPath(vector<unsigned int> v);
+	void displayPath(const vector<unsigned int> &v);
 	size_t frstAvailableVehicle(const time &t) const{
 
 		for(size_t i = 0; i <= vehicles.size(); i++)
