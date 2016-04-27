@@ -34,7 +34,14 @@ public:
 	void info() const{
 		printf("%dh%d\n",h,m);
 	};
+	string info_s() const{
+		char tmp[32];
+		sprintf(tmp,"%dh%d",h,m);
+		return std::string(tmp);
+	};
 };
+
+//time operator-(const time &a, const time &b);
 
 class client{
 public:
@@ -90,13 +97,15 @@ private:
 	vector<client> clients;
 	vector<vehicle> vehicles;
 	GraphViewer * gv;
-	unsigned int available_vehicles;
+
 	landmark airport;
 	time current_time;
 
 public:
 
 	friend class vehicle;
+
+	unsigned int available_vehicles;
 
 	bool readNodes(const char* file);
 	vector<road> readRoads(const char* file);
@@ -106,6 +115,12 @@ public:
 	void createVehicles();
 	void updateVehicles();
 	void distrClients();
+	time getCurrentTime() const{
+		return current_time;
+	}
+
+	bool addClient();
+	void clientInfo();
 
 
 	size_t frstAvailableVehicle() const{
@@ -134,7 +149,11 @@ public:
 			const char* clients_file,
 			unsigned int nr_vehicles
 	);
-	~cg1();
+	~cg1(){
+		gv->closeWindow();
+		delete(gv);
+		delete(graph);
+	};
 
 };
 

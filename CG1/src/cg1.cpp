@@ -9,6 +9,7 @@
 #include "graphviewer.h"
 #include <unistd.h>
 #include <iostream>
+#include <iomanip>
 
 cg1::cg1(const char* nodes_file,
 		const char* roads_file,
@@ -18,7 +19,7 @@ cg1::cg1(const char* nodes_file,
 		unsigned int nr_vehicles)
 {
 
-	available_vehicles =nr_vehicles;
+	available_vehicles = nr_vehicles;
 
 	graph = new Graph<unsigned int>();
 	current_time = time();
@@ -35,6 +36,7 @@ cg1::cg1(const char* nodes_file,
 
 	addNodes();
 	addEdges();
+/*
 	char kek = getchar();
 	while(kek != 'q'){
 		distrClients();
@@ -42,11 +44,7 @@ cg1::cg1(const char* nodes_file,
 		cin.ignore(1);
 		kek = getchar();
 	}
-
-}
-
-cg1::~cg1(){
-	delete(graph);
+*/
 }
 
 bool cg1::readNodes(const char* file){
@@ -304,6 +302,7 @@ bool cg1::readClients(const char* file){
 
 void cg1::distrClients(){
 	printf("distrClients()\n ");
+
 	if(clients.size()== 0){
 		printf("no clients!\n ");
 		return;
@@ -324,20 +323,25 @@ void cg1::distrClients(){
 		return;
 	}
 
-	printf("\nAdding %s to vehicle.\n ",clients.begin()->name.c_str());
+	printf("\nAdding %s to vehicle.\n",clients.begin()->name.c_str());
 	vehicles[i].addPassanger(*clients.begin());
 	clients.erase(clients.begin());
 
-	time w1,w2;
+	time w1,w2, w3, w4;
 
 	while(clients.size() != 0){
-
-		w1 = clients.begin()->arrival - current_time;
 		printf("Time w8ing 4 next client: ");
+		w3 = clients.begin()->arrival;
+		w4 = current_time;
+		printf("%s - %s = ",w3.info_s().c_str(),w4.info_s().c_str());
+		w1 = w3 - w4;
 		w1.info();
 
-		w2 = calcTime(vehicles[i]) - clients.begin()->arrival;
 		printf("Time w8ing 4 vehicle: ");
+		w3 = calcTime(vehicles[i]);
+		w4 = clients.begin()->arrival;
+		printf("%s - %s = ",w3.info_s().c_str(),w4.info_s().c_str());
+		w2 =  w3 - w4;
 		w2.info();
 
 		if(clients.begin()->arrival + w2 < clients.begin()->arrival){
@@ -370,6 +374,7 @@ void cg1::distrClients(){
 time cg1::calcTime(vehicle &c){
 
 	time tmp;
+	printf("Claculating dist ...\n");
 	double n = calcPath(c);
 	printf("%f / %f = %f\n", n,vehicle::avg_speed,n/vehicle::avg_speed);
 	unsigned int t = (unsigned int)  (0.5 + n /vehicle::avg_speed );
@@ -407,9 +412,12 @@ time time::operator+(const time &b) const{
 }
 
 time time::operator-(const time &b) const{
+
+	//printf("%s - %s\n",this->info_s().c_str(),b.info_s().c_str());
+
 	time tmp;
-	int _m = this->m - b.m;
-	int _h = abs(this->h - b.h);
+	int _m = m - b.m;
+	int _h = abs(h - b.h);
 	if(_m < 0 && _h != 0){
 		_m += 60;
 		_h--;
@@ -535,17 +543,20 @@ double cg1::calcPath(vehicle &v){
 
 	while(!clients.empty()){
 
+		printf("dijkstraShortestPath(*(v.path.end()-1))\n");
 		graph->dijkstraShortestPath(*(v.path.end()-1));
+		printf("Success!\n");
 
 		for(size_t i = 0; i < clients.size(); i++){
 
 			if(i == 0){
+				printf("getPath(*(v.path.end()-1),clients[i].destination.node,tmp_dist)\n");
 				tmp_v = graph->getPath(*(v.path.end()-1),clients[i].destination.node,tmp_dist);
 				tmp_index = i;
 				printf("tmp_dist2 = %f \n", tmp_dist);
 				continue;
 			}
-
+			printf("graph->getPath(*(v.path.end()-1),clients[i].destination.node,tmp_dist2);\n");
 			tmp_v2 = graph->getPath(*(v.path.end()-1),clients[i].destination.node,tmp_dist2);
 
 			printf("tmp_dist2 = %f \n", tmp_dist2);
@@ -633,6 +644,9 @@ void cg1::clearGraph(){
 		if(it2 != landmarks.end())
 			gv->setVertexColor(it2->node,RED);
 
+		if((*it1)->getInfo() == airport.node)
+			gv->setVertexColor((*it1)->getInfo(),MAGENTA);
+
 		else
 			gv->setVertexColor((*it1)->getInfo(),YELLOW);
 
@@ -643,4 +657,88 @@ void cg1::clearGraph(){
 		gv->setEdgeColor(i,BLACK);
 		gv->setEdgeThickness(i,1);
 	}
+}
+
+bool cg1::addClient(){
+
+	system("cls");
+	time t;
+	string s;
+	unsigned long nif;
+
+	cout << "Arrival hour: ";
+	cin >> t.h;
+	cin.ignore(1000,'\n');
+	cout << "Arrival minute: ";
+	cin >> t.m;
+	cin.ignore(1000,'\n');
+
+	if(t < current_time){
+		printf("Invalid arrival: ");
+		t.info();
+		system("pause");
+		return 0;
+	}
+
+	cout << "NIF: ";
+	cin >> nif;
+	cin.ignore(1000,'\n');
+
+	unsigned long tmp = nif;
+	size_t cont = 0;
+	while(tmp != 0){
+		tmp /= 10;
+		cont++;
+	}
+	if(cont != 9){
+		printf("Invalid NIF: %lu\n",nif);
+		system("pause");
+		return 0;
+	}
+
+	cout << "Destination: ";
+	getline(cin,s);
+	cin.ignore(1000,'\n');
+
+	vector<landmark>::const_iterator it;
+
+	it = find(landmarks.begin(),landmarks.end(), s.c_str());
+
+	if(it == landmarks.end()){
+		printf("Invalid destination: %s\n",s.c_str());
+		system("pause");
+		return 0;
+	}
+
+	client c;
+	c.arrival = t;
+	c.NIF = nif;
+	c.destination = *it;
+
+	clients.push_back(c);
+
+	sort(clients.begin(),clients.end());
+
+	printf("Client added successfully!\n");
+
+	system("pause");
+
+	return 1;
+
+};
+
+void cg1::clientInfo(){
+
+	system("cls");
+
+	sort(clients.begin(),clients.end());
+
+	cout  << setw(8) << "ARRIVAL" << setw(15) << "NIF"<< setw(25) << "DESTINATION\n\n";
+
+	for(size_t i = 0; i < clients.size(); i++){
+		cout << setw(8) << clients[i].arrival.info_s() << setw(15) << clients[i].NIF << setw(30) << clients[i].destination.name << endl;
+	}
+
+	system("pause");
+
 }
