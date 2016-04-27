@@ -46,9 +46,7 @@ class Vertex {
 public:
 	double x;
 	double y;
-	double x_rad;
-	double y_rad;
-	Vertex(T in,double x, double y, double x_rad, double y_rad): info(in), visited(false), processing(false), indegree(0), dist(0),x(x), y(y), x_rad(x_rad), y_rad(y_rad) {
+	Vertex(T in,double x, double y): info(in), visited(false), processing(false), indegree(0), dist(0),x(x), y(y) {
 		path = NULL;
 	};
 	friend class Graph<T>;
@@ -200,12 +198,12 @@ public:
 
 		return acc;
 	}
-	bool addVertex(const T &in, double x, double y, double x_rad, double y_rad) {
+	bool addVertex(const T &in, double x, double y) {
 		typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
 		typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
 		for (; it!=ite; it++)
 			if ((*it)->info == in) return false;
-		vertexSet.push_back(new Vertex<T>(in,x,y,x_rad,y_rad));
+		vertexSet.push_back(new Vertex<T>(in,x,y));
 		return true;
 	}
 	bool addEdge(const T &sourc, const T &dest, string name, unsigned int id, bool isBothWays){
@@ -257,6 +255,34 @@ public:
 		}
 		return -1;
 	}
+	double getEdgeWeight(const T &src, const T &dest){
+		typename vector<Vertex<T>*>::const_iterator it= vertexSet.begin();
+		typename vector<Edge<T> >::const_iterator it2;
+		vector<Edge<T> > v;
+
+		double acc= 0;
+
+
+		while(it!= vertexSet.end()){
+
+			if((*it)->info == src){
+				v = (*it)->adj;
+				it2 = v.begin();
+
+				while(it2 != v.end()){
+
+					if(it2->dest->info == dest)
+						return it2->weight;
+					it2++;
+				}
+
+				return -1;
+			}
+
+			it++;
+		}
+		return -1;
+	}
 	bool removeVertex(const T &in);
 	bool removeEdge(const T &sourc, const T &dest);
 	vector<T> dfs() const;
@@ -271,7 +297,8 @@ public:
 	vector<Vertex<T>*> getSources() const;
 	int getNumCycles();
 	vector<T> topologicalOrder();
-	vector<T> getPath(const T &origin, const T &dest);
+	vector<T> getPath(const T &origin, const T &dest, double &d);
+	double getPathWeight(const T &origin, const T &dest);
 	void unweightedShortestPath(const T &v);
 	bool isDAG();
 
@@ -583,13 +610,15 @@ vector<T> Graph<T>::topologicalOrder() {
 
 
 template<class T>
-vector<T> Graph<T>::getPath(const T &origin, const T &dest){
+vector<T> Graph<T>::getPath(const T &origin, const T &dest, double &d){
 
 	list<T> buffer;
 	Vertex<T>* v = getVertex(dest);
 
 	buffer.push_front(v->info);
 	while ( v->path != NULL &&  v->path->info != origin) {
+		if(v->path != NULL && v != NULL)
+			d += calcDist(v,v->path);
 		v = v->path;
 		buffer.push_front(v->info);
 	}
@@ -847,10 +876,10 @@ void Graph<T>::floydWarshallShortestPath() {
 template<class T>
 double calcDist(const Vertex<T>*a, const Vertex<T>*b){
 
-	double u = sin( (a->x_rad - b->x_rad)/2 );
-	double v = sin( (a->y_rad - b->y_rad)/2 );
-
-	return 2.0 * EARTH_RAD * asin(sqrt(u * u + cos(a->x_rad) * cos(b->x_rad) * v * v));
+	return sqrt(
+			pow(a->x - b->x,2) +
+			pow(a->y - b->y,2)
+	);
 
 }
 

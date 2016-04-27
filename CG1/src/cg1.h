@@ -4,6 +4,8 @@
 #include "graph.h"
 #include "graphviewer.h"
 #include <string>
+#include <stdio.h>
+
 
 class landmark{
 public:
@@ -13,19 +15,26 @@ public:
 		return name == std::string(s);
 	}
 	bool operator==(const unsigned int &n) const{
-			return node == n;
-		}
+		return node == n;
+	}
+	landmark(string s, unsigned int n):name(s),node(n){};
+	landmark():name(""),node(-1){};
 };
 
-struct time{
+class time{
+public:
 	unsigned int h;
 	unsigned int m;
+	time():h(0),m(0){};
+	time(unsigned int a, unsigned int b):h(a),m(b){};
+	time operator+(const time &b) const;
+	time operator-(const time &b) const;
+	bool operator<(const time &b) const;
+	bool operator<=(const time &b) const;
+	void info() const{
+		printf("%dh%d\n",h,m);
+	};
 };
-
-time operator+(const time &a, const time &b);
-time operator-(const time &a, const time &b);
-bool operator<(const time &a, const time &b);
-time null_time();
 
 class client{
 public:
@@ -34,16 +43,7 @@ public:
 	landmark destination;
 	time arrival;
 	bool operator<(const client &c) const{
-		if(arrival.h < c.arrival.h)
-			return 1;
-		else if(arrival.h == c.arrival.h){
-			if(arrival.m < c.arrival.m)
-				return 1;
-			else
-				return 0;
-		}
-		else
-			return 0;
+		return arrival < c.arrival;
 	}
 
 };
@@ -52,13 +52,22 @@ class vehicle{
 public:
 	vector<client> passangers;
 	vector<unsigned int> path;
-	static const size_t max_passangers = 8;
-	static const unsigned int avg_speed = 60;
-	bool set;
+	static size_t max_passangers;
+	static double avg_speed;
+	bool available;
 	time departure;
 	time arrival;
-	vehicle():set(0){};
+	vehicle():available(1){};
+	static void setStatics(double d,unsigned int ui){
+		max_passangers = ui;
+		avg_speed = d;
+	};
+
+	bool addPassanger(client c);
+	friend class graph;
 };
+
+
 
 class road{
 public:
@@ -80,32 +89,29 @@ private:
 	vector<landmark> landmarks;
 	vector<client> clients;
 	vector<vehicle> vehicles;
-	landmark airport;
 	GraphViewer * gv;
 	unsigned int available_vehicles;
+	landmark airport;
+	time current_time;
 
 public:
+
+	friend class vehicle;
 
 	bool readNodes(const char* file);
 	vector<road> readRoads(const char* file);
 	bool readSubroads(const char* file, vector<road> &roads);
 	bool readLandmarks(const char* file);
 	bool readClients(const char* file);
-
+	void createVehicles();
+	void updateVehicles();
 	void distrClients();
-	bool freeVehicle() const {
-		for(size_t i = 0; i < vehicles.size(); i++)
-			if(!vehicles[i].set)
-				return 1;
-		return 0;
-	};
 
-	time calcTime(vehicle &c);
-	void displayPath(const vector<unsigned int> &v);
-	size_t frstAvailableVehicle(const time &t) const{
+
+	size_t frstAvailableVehicle() const{
 
 		for(size_t i = 0; i <= vehicles.size(); i++)
-			if(vehicles[i].arrival < t)
+			if(vehicles[i].available)
 				return i;
 
 		return vehicles.size();
@@ -114,10 +120,20 @@ public:
 
 	void addNodes();
 	void addEdges();
+	double calcPath(vehicle &v);
+	time calcTime(vehicle &c);
+	void displayPath(const vehicle &v);
+	void clearGraph();
 
 
 
-	cg1(const char* nodes_file, const char* roads_file, const char* subroads_file, const char* landmarks_file, const char* clients_file);
+	cg1(const char* nodes_file,
+			const char* roads_file,
+			const char* subroads_file,
+			const char* landmarks_file,
+			const char* clients_file,
+			unsigned int nr_vehicles
+	);
 	~cg1();
 
 };
