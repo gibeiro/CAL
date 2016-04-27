@@ -63,7 +63,7 @@ void change_number(cg1 o){
 
 int main(int argc, char *argv[]){
 
-	vehicle::setStatics(.25, 5);
+	vehicle::setStatics(.3, 6);
 
 	cg1 *obj = new cg1("res/nodes.txt",
 			"res/roads.txt",
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]){
 			obj->addClient();
 			break;
 		case 3:
-			cout << "Goodbye!";
+			obj->blockRoad();
 			break;
 		case 4:
 			change_speed();
@@ -103,11 +103,8 @@ int main(int argc, char *argv[]){
 		case 7:
 			obj->clientInfo();
 			break;
-		case 0:
-			break;
 		default:
-			menu(obj);
-			cin >> choice;
+			break;
 		}
 	} while(choice != 0);
 

@@ -36,15 +36,6 @@ cg1::cg1(const char* nodes_file,
 
 	addNodes();
 	addEdges();
-/*
-	char kek = getchar();
-	while(kek != 'q'){
-		distrClients();
-		updateVehicles();
-		cin.ignore(1);
-		kek = getchar();
-	}
-*/
 }
 
 bool cg1::readNodes(const char* file){
@@ -169,12 +160,10 @@ bool cg1::readSubroads(const char* file, vector<road> &roads){
 	while(!stream.eof()){
 
 		stream.getline(tmp1,128);
-		//printf("%s\n",tmp1);
 
 
 		tmp2 = strtok(tmp1,";");
 		id1 = atoi(tmp2);
-		//printf("Road: %lu\n", id1);
 
 
 		if(id1 > previous_id)
@@ -184,11 +173,9 @@ bool cg1::readSubroads(const char* file, vector<road> &roads){
 
 		tmp2 = strtok(NULL,";");
 		id2 = atoi(tmp2);
-		//printf("Src: %lu\n", id2);
 
 		tmp2 = strtok(NULL,";");
 		id3 = atoi(tmp2);
-		//printf("Dest: %lu\n", id1);
 
 		it = find(roads.begin(),roads.end(),id1);
 
@@ -301,71 +288,75 @@ bool cg1::readClients(const char* file){
 }
 
 void cg1::distrClients(){
-	printf("distrClients()\n ");
+
+	system("cls");
 
 	if(clients.size()== 0){
-		printf("no clients!\n ");
+		printf("No clients!\n");
 		return;
 	}
 
 	sort(clients.begin(),clients.end());
-
-	printf("Time b4: ");
-	current_time.info();
 	current_time = clients.begin()->arrival;
-	printf("Time after: ");
-	current_time.info();
 
 	size_t i = frstAvailableVehicle();
 	if(i == vehicles.size()){
-		printf("no vehicles! lost client\n\n");
+		printf("No available vehicles!\nClient lost ...\n");
 		clients.erase(clients.begin());
 		return;
 	}
 
-	printf("\nAdding %s to vehicle.\n",clients.begin()->name.c_str());
+	printf("\nAdding %s to a vehicle.\n",clients.begin()->name.c_str());
 	vehicles[i].addPassanger(*clients.begin());
 	clients.erase(clients.begin());
 
 	time w1,w2, w3, w4;
 
 	while(clients.size() != 0){
-		printf("Time w8ing 4 next client: ");
+
 		w3 = clients.begin()->arrival;
 		w4 = current_time;
-		printf("%s - %s = ",w3.info_s().c_str(),w4.info_s().c_str());
 		w1 = w3 - w4;
-		w1.info();
 
-		printf("Time w8ing 4 vehicle: ");
 		w3 = calcTime(vehicles[i]);
 		w4 = clients.begin()->arrival;
-		printf("%s - %s = ",w3.info_s().c_str(),w4.info_s().c_str());
 		w2 =  w3 - w4;
-		w2.info();
 
 		if(clients.begin()->arrival + w2 < clients.begin()->arrival){
-			printf("\nVehicle went to destination.\n\n ");
+			printf("\nVehicle went to the following destinations:\n");
+
+			for(size_t n = 0; n < vehicles[i].passangers.size(); n++)
+				cout << vehicles[i].passangers[n].destination.name << endl;
+
+
 			vehicles[i].available = 0;
 			displayPath(vehicles[i]);
+
 			break;
 		}
 
 		if(w1 < w2){
-			printf("\nAdding %s to vehicle.\n ",clients.begin()->name.c_str());
+			printf("\nAdding %s to a vehicle.\n",clients.begin()->name.c_str());
 			vehicles[i].addPassanger(*clients.begin());
 			clients.erase(clients.begin());
 			continue;
 		}
 		else{
-			printf("\nVehicle went to destination.\n\n ");
+			printf("\nVehicle went to the following destinations:\n");
+
+			for(size_t n = 0; n < vehicles[i].passangers.size(); n++)
+				cout << vehicles[i].passangers[n].destination.name << endl;
+
 			vehicles[i].available = 0;
 			displayPath(vehicles[i]);
-			break;
+			return;
 		}
 	}
 	if(clients.empty()){
-		printf("\nVehicle went to destination.\n\n ");
+		printf("\nVehicle went to the following destinations:\n");
+
+		for(size_t n = 0; n < vehicles[i].passangers.size(); n++)
+			cout << vehicles[i].passangers[n].destination.name << endl;
 		vehicles[i].available = 0;
 		displayPath(vehicles[i]);
 	}
@@ -374,9 +365,7 @@ void cg1::distrClients(){
 time cg1::calcTime(vehicle &c){
 
 	time tmp;
-	printf("Claculating dist ...\n");
 	double n = calcPath(c);
-	printf("%f / %f = %f\n", n,vehicle::avg_speed,n/vehicle::avg_speed);
 	unsigned int t = (unsigned int)  (0.5 + n /vehicle::avg_speed );
 
 	if(t < 0)
@@ -388,11 +377,7 @@ time cg1::calcTime(vehicle &c){
 	}
 	tmp.m = t;
 
-	tmp.info();
-
 	c.arrival = c.departure + tmp;
-
-	c.arrival.info();
 
 	return c.arrival;
 
@@ -412,8 +397,6 @@ time time::operator+(const time &b) const{
 }
 
 time time::operator-(const time &b) const{
-
-	//printf("%s - %s\n",this->info_s().c_str(),b.info_s().c_str());
 
 	time tmp;
 	int _m = m - b.m;
@@ -543,23 +526,18 @@ double cg1::calcPath(vehicle &v){
 
 	while(!clients.empty()){
 
-		printf("dijkstraShortestPath(*(v.path.end()-1))\n");
 		graph->dijkstraShortestPath(*(v.path.end()-1));
-		printf("Success!\n");
 
 		for(size_t i = 0; i < clients.size(); i++){
 
 			if(i == 0){
-				printf("getPath(*(v.path.end()-1),clients[i].destination.node,tmp_dist)\n");
+
 				tmp_v = graph->getPath(*(v.path.end()-1),clients[i].destination.node,tmp_dist);
 				tmp_index = i;
-				printf("tmp_dist2 = %f \n", tmp_dist);
 				continue;
 			}
-			printf("graph->getPath(*(v.path.end()-1),clients[i].destination.node,tmp_dist2);\n");
 			tmp_v2 = graph->getPath(*(v.path.end()-1),clients[i].destination.node,tmp_dist2);
 
-			printf("tmp_dist2 = %f \n", tmp_dist2);
 
 			if(tmp_dist2 < tmp_dist){
 				tmp_dist = tmp_dist2;
@@ -572,7 +550,6 @@ double cg1::calcPath(vehicle &v){
 		v.path.insert(v.path.end(),tmp_v.begin()+1,tmp_v.end());
 
 		acc += tmp_dist;
-		printf("Distancia intermedia: %f \n", tmp_dist);
 
 	}
 
@@ -580,32 +557,10 @@ double cg1::calcPath(vehicle &v){
 	graph->dijkstraShortestPath(*(v.path.end()-1));
 	tmp_v = graph->getPath(*(v.path.end()-1),airport.node,tmp_dist);
 	acc += tmp_dist;
-	printf("Distancia intermedia: %f \n", tmp_dist);
 	v.path.insert(v.path.end(),tmp_v.begin()+1,tmp_v.end());
 
-
-	printf("Distancia final: %f \n", acc);
 	return acc;
 
-
-	/*
-	graph->dijkstraShortestPath(airport.node);
-	tmp = graph->getPath(airport.node,v.passangers[0].destination.node,acc);
-	v.path.insert(v.path.end(),tmp.begin(),tmp.end() - 1);
-
-	for(size_t i = 0; i < v.passangers.size(); i++ ){
-		graph->dijkstraShortestPath(v.passangers[i-1].destination.node);
-		tmp = graph->getPath(v.passangers[i-1].destination.node,v.passangers[i].destination.node,acc);
-		v.path.insert(v.path.end(),tmp.begin(),tmp.end()-1);
-
-	}
-
-	graph->dijkstraShortestPath((v.passangers.end()-1)->destination.node);
-	tmp = graph->getPath((v.passangers.end()-1)->destination.node,airport.node,acc);
-	v.path.insert(v.path.end(),tmp.begin(),tmp.end());
-
-	return 2.0 + acc/3;
-	 */
 }
 
 bool vehicle::addPassanger(client c){
@@ -620,7 +575,6 @@ bool vehicle::addPassanger(client c){
 }
 
 void cg1::updateVehicles(){
-	printf("updateVehicles()\n\n ");
 	for(size_t i = 0; i < vehicles.size(); i++){
 		if(vehicles[i].arrival <= current_time){
 			vehicles[i].passangers.clear();
@@ -630,6 +584,7 @@ void cg1::updateVehicles(){
 			vehicles[i].arrival = time();
 		}
 	}
+	system("pause");
 }
 
 void cg1::clearGraph(){
@@ -662,57 +617,56 @@ void cg1::clearGraph(){
 bool cg1::addClient(){
 
 	system("cls");
+	client c;
 	time t;
 	string s;
-	unsigned long nif;
+	unsigned long tmp;
+
+	cout << "Name: ";
+	getline(cin,c.name);
 
 	cout << "Arrival hour: ";
 	cin >> t.h;
-	cin.ignore(1000,'\n');
 	cout << "Arrival minute: ";
 	cin >> t.m;
-	cin.ignore(1000,'\n');
+
+	c.arrival = t;
 
 	if(t < current_time){
-		printf("Invalid arrival: ");
+		printf("\nInvalid arrival: ");
 		t.info();
 		system("pause");
 		return 0;
 	}
 
 	cout << "NIF: ";
-	cin >> nif;
-	cin.ignore(1000,'\n');
+	cin >> c.NIF;
 
-	unsigned long tmp = nif;
+	tmp = c.NIF;
 	size_t cont = 0;
 	while(tmp != 0){
 		tmp /= 10;
 		cont++;
 	}
 	if(cont != 9){
-		printf("Invalid NIF: %lu\n",nif);
+		printf("\nInvalid NIF: %lu\n",c.NIF);
 		system("pause");
 		return 0;
 	}
 
 	cout << "Destination: ";
 	getline(cin,s);
-	cin.ignore(1000,'\n');
 
 	vector<landmark>::const_iterator it;
 
 	it = find(landmarks.begin(),landmarks.end(), s.c_str());
 
 	if(it == landmarks.end()){
-		printf("Invalid destination: %s\n",s.c_str());
+		printf("\nInvalid destination: %s\n",s.c_str());
 		system("pause");
 		return 0;
 	}
 
-	client c;
-	c.arrival = t;
-	c.NIF = nif;
 	c.destination = *it;
 
 	clients.push_back(c);
@@ -741,4 +695,45 @@ void cg1::clientInfo(){
 
 	system("pause");
 
+}
+
+
+void cg1::blockRoad(){
+
+	system("cls");
+
+	unsigned int src, dst;
+
+	cout << "Source node: ";
+	cin >> src;
+	cout << "Destination node: ";
+	cin >> dst;
+
+	if(src > 24 || dst > 24){
+		cout << "Invalid nodes!\n";
+		system("pause");
+		return;
+	}
+
+	int n = abs((int)src - (int)dst);
+	if(n == 1 || n == 5){
+		unsigned int edge = graph->getEdge(src,dst);
+		unsigned int _edge = rand() % 80 + 80;
+		gv->removeEdge(edge);
+		gv->addEdge(_edge,src,dst,EdgeType::DIRECTED);
+		gv->setEdgeColor(_edge,GRAY);
+		gv->setEdgeDashed(_edge,1);
+		graph->removeEdge(src,dst);
+		gv->rearrange();
+
+		cout << "Successfully removed the edge from " << src << " to " << dst << "!\n";
+
+		system("pause");
+		return;
+	}
+	else{
+		cout << "Invalid nodes!\n";
+		system("pause");
+		return;
+	}
 }

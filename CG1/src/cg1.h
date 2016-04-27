@@ -139,6 +139,7 @@ public:
 	time calcTime(vehicle &c);
 	void displayPath(const vehicle &v);
 	void clearGraph();
+	void blockRoad();
 
 
 

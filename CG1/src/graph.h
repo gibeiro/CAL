@@ -753,26 +753,16 @@ void Graph<T>::bellmanFordShortestPath(const T &s) {
 template<class T>
 void Graph<T>::dijkstraShortestPath(const T &s) {
 
-	printf("here1\n");
 
 	for(unsigned int i = 0; i < vertexSet.size(); i++) {
-		printf("z\n");
 		vertexSet[i]->path = NULL;
-		printf("a\n");
 		vertexSet[i]->dist = INT_INFINITY;
-		printf("b\n");
 		vertexSet[i]->processing = false;
-		printf("c\n");
 	}
 
-	printf("here2\n");
 
 	Vertex<T>* v = getVertex(s);
 
-	if(v == NULL)
-		printf("Vertix doenst exist!\n");
-
-	printf("here3\n");
 
 	v->dist = 0;
 
