@@ -41,8 +41,6 @@ public:
 	};
 };
 
-//time operator-(const time &a, const time &b);
-
 class client{
 public:
 	string name;

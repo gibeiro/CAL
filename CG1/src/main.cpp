@@ -63,7 +63,7 @@ void change_number(cg1 o){
 
 int main(int argc, char *argv[]){
 
-	vehicle::setStatics(.3, 6);
+	vehicle::setStatics(.5, 4);
 
 	cg1 *obj = new cg1("res/nodes.txt",
 			"res/roads.txt",

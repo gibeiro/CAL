@@ -301,7 +301,7 @@ void cg1::distrClients(){
 
 	size_t i = frstAvailableVehicle();
 	if(i == vehicles.size()){
-		printf("No available vehicles!\nClient lost ...\n");
+		printf("No available vehicles!\nClient %s lost ...\n", clients.begin()->name.c_str());
 		clients.erase(clients.begin());
 		return;
 	}
@@ -313,6 +313,18 @@ void cg1::distrClients(){
 	time w1,w2, w3, w4;
 
 	while(clients.size() != 0){
+
+		if(vehicles[i].passangers.size() == vehicle::max_passangers){
+			printf("Vehicle is full.\n");
+			printf("\nVehicle went to the following destinations:\n");
+
+			for(size_t n = 0; n < vehicles[i].passangers.size(); n++)
+				cout << vehicles[i].passangers[n].destination.name << endl;
+
+			vehicles[i].available = 0;
+			displayPath(vehicles[i]);
+			return;
+		}
 
 		w3 = clients.begin()->arrival;
 		w4 = current_time;
@@ -332,7 +344,7 @@ void cg1::distrClients(){
 			vehicles[i].available = 0;
 			displayPath(vehicles[i]);
 
-			break;
+			return;
 		}
 
 		if(w1 < w2){

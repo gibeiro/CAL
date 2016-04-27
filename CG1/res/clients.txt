@@ -13,8 +13,3 @@ Cliente11;Hotel Ibis Gaia;222222222;11h22
 Cliente12;Porto Palacio Hotel;333333333;11h25
 Cliente13;Hotel Porto-Mar;444444444;13h10
 Cliente14;Hotel Novotel Gaia;555555555;13h15
-Cliente15;Star Inn Porto;666666666;15h00
-Cliente16;Porto Palacio Hotel;777777777;15h00
-Cliente17;Hotel Vila Gale Porto;888888888;15h00
-Cliente18;Hotel Novotel Gaia;999999999;15h01
-Cliente19;Hotel Ibis Gaia;000000000;15h05
