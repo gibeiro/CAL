@@ -1,4 +1,4 @@
-#include "cg1.h"
+
 #include <fstream>
 #include <cstring>
 #include <string>
@@ -6,10 +6,12 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
-#include "graphviewer.h"
 #include <unistd.h>
 #include <iostream>
 #include <iomanip>
+#include "graphviewer.h"
+#include "cg1.h"
+#include "strings.h"
 
 cg1::cg1(const char* nodes_file,
 		const char* roads_file,
@@ -704,6 +706,65 @@ void cg1::clientInfo(){
 	for(size_t i = 0; i < clients.size(); i++){
 		cout << setw(8) << clients[i].arrival.info_s() << setw(15) << clients[i].NIF << setw(30) << clients[i].destination.name << endl;
 	}
+
+	system("pause");
+
+}
+
+void cg1::searchClient(){
+	system("cls");
+
+	cin.ignore(1000,'\n');
+
+	cout << "Client name? ";
+
+	string client_name;
+	getline(cin,client_name);
+
+	cout << endl;
+
+	std::vector<string> exact;
+	std::vector<string> aprox;
+	std::vector<int> substr;
+	int distance;
+
+	std::vector<client>::const_iterator it1;
+
+	it1 = clients.begin();
+
+	while(it1 != clients.end()){
+
+		substr = KMP(it1->name,client_name);
+
+		if(substr.size() > 0)
+			exact.push_back(it1->name);
+		else{
+			distance = levenshtein_distance(it1->name,client_name);
+
+			if( (size_t) distance <= client_name.size() - 1)
+				aprox.push_back(it1->name);
+		}
+
+		it1++;
+	}
+	size_t j;
+	if( (j = exact.size()) > 0){
+		cout << "Exact matches:" << endl;
+		for(size_t i = 0; i < j; i++)
+			cout << exact[i] << endl;
+		cout << endl;
+	}
+
+	size_t k;
+	if( (k = aprox.size()) > 0){
+		cout << "Aproximate matches:" << endl;
+		for(size_t i = 0; i < k; i++)
+			cout << aprox[i] << endl;
+		cout << endl;
+	}
+
+	if(j+k == 0)
+		cout << "No matches found.\n\n";
 
 	system("pause");
 

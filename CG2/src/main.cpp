@@ -20,6 +20,7 @@ void menu(cg1 *o){
 	cout << "5 - Change vehicle space\n";
 	cout << "6 - Change vehicle number\n";
 	cout << "7 - Client info\n";
+	cout << "8 - Search client\n";
 	cout << "0 - Exit\n";
 	cout << "Selection: ";
 }
@@ -102,6 +103,9 @@ int main(int argc, char *argv[]){
 			break;
 		case 7:
 			obj->clientInfo();
+			break;
+		case 8:
+			obj->searchClient();
 			break;
 		default:
 			break;

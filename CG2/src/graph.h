@@ -148,8 +148,8 @@ class Edge {
 	Vertex<T> * dest;
 	double weight;
 	T id;
-	string name;
 public:
+	string name;
 	Edge(Vertex<T> *d, double w, T id, string name);
 	friend class Graph<T>;
 	friend class Vertex<T>;

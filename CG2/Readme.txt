@@ -3,4 +3,4 @@ TODO:
 -Identificar destinos com o nome das ruas
 -Pesquisar todas as carrinhas por um cliente conhecido (pesquisa exata e aproximada)
 	-Possibilidade de mudar para essa carrinha
--Avaliar complexidade dos algoritmos utilizado
+-Avaliar complexidade dos algoritmos utilizados

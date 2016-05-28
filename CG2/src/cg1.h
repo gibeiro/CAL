@@ -1,11 +1,10 @@
-#ifndef _CG1_H_
-#define _CG1_H_
-
 #include "graph.h"
 #include "graphviewer.h"
 #include <string>
 #include <stdio.h>
 
+#ifndef _CG1_H_
+#define _CG1_H_
 
 class landmark{
 public:
@@ -51,6 +50,15 @@ public:
 		return arrival < c.arrival;
 	}
 
+	bool operator==(const client &c) const{
+		return name == c.name;
+	}
+
+	bool operator==(const string &s) const{
+		return name == s;
+	}
+
+
 };
 
 class vehicle{
@@ -70,6 +78,14 @@ public:
 
 	bool addPassanger(client c);
 	friend class graph;
+	bool operator==(const string &s) const{
+		std::vector<client>::const_iterator it1;
+		it1 = passangers.begin();
+		while(it1 != passangers.end())
+			if(it1++->name == s)
+				return 1;
+		return 0;
+	}
 };
 
 
@@ -119,6 +135,7 @@ public:
 
 	bool addClient();
 	void clientInfo();
+	void searchClient();
 
 
 	size_t frstAvailableVehicle() const{

@@ -1,13 +1,13 @@
-Cliente0;Porto Palacio Hotel;510701780;15h00
-Cliente1;Hotel Ibis Gaia;589721287;15h00
-Cliente2;Hotel Novotel Gaia;;836440333;14h30
-Cliente3;Hotel Internacional Porto;926557290;14h15
-Cliente4;Hotel Vila Gale Porto;782078589;14h10
-Cliente5;Hotel Porto-Mar;804388809;11h45
-Cliente6;Star Inn Porto;288309768;11h45
-Cliente7;Porto Palacio Hotel;189763536;11h00
-Cliente8;Hotel Ibis Gaia;868506003;11h00
-Cliente9;Hotel Novotel Gaia;785672017;11h00
+Ana;Porto Palacio Hotel;510701780;15h00
+Anna;Hotel Ibis Gaia;589721287;15h00
+Hannah;Hotel Novotel Gaia;;836440333;14h30
+Mary Anne;Hotel Internacional Porto;926557290;14h15
+Mariana;Hotel Vila Gale Porto;782078589;14h10
+Susana;Hotel Porto-Mar;804388809;11h45
+Joanne;Star Inn Porto;288309768;11h45
+Roberto;Porto Palacio Hotel;189763536;11h00
+Robb;Hotel Ibis Gaia;868506003;11h00
+Bob;Hotel Novotel Gaia;785672017;11h00
 Cliente10;Star Inn Porto;111111111;11h20
 Cliente11;Hotel Ibis Gaia;222222222;11h22
 Cliente12;Porto Palacio Hotel;333333333;11h25
