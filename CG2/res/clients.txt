@@ -8,8 +8,8 @@ Joanne;Star Inn Porto;288309768;11h45
 Roberto;Porto Palacio Hotel;189763536;11h00
 Robb;Hotel Ibis Gaia;868506003;11h00
 Bob;Hotel Novotel Gaia;785672017;11h00
-Cliente10;Star Inn Porto;111111111;11h20
-Cliente11;Hotel Ibis Gaia;222222222;11h22
-Cliente12;Porto Palacio Hotel;333333333;11h25
-Cliente13;Hotel Porto-Mar;444444444;13h10
-Cliente14;Hotel Novotel Gaia;555555555;13h15
+Joana Maria;Star Inn Porto;111111111;11h20
+Ohanna;Hotel Ibis Gaia;222222222;11h22
+Jean;Porto Palacio Hotel;333333333;11h25
+Joao;Hotel Porto-Mar;444444444;13h10
+Johannah;Hotel Novotel Gaia;555555555;13h15
