@@ -57,8 +57,9 @@ public:
 
 	void addEdge(Vertex<T> *dest, string name, unsigned int id){
 		double w = calcDist(this,dest);
-		Edge<T> edgeD(dest,w,id,name);
-		adj.push_back(edgeD);
+		Edge<T> *edgeD = new Edge<T>(dest,w,id,name);
+		Edge<T>::edgeSet.push_back(edgeD);
+		adj.push_back(*edgeD);
 	};
 	bool removeEdgeTo(Vertex<T> *d);
 
@@ -149,6 +150,7 @@ class Edge {
 	double weight;
 	T id;
 public:
+	static vector<Edge<T> *> edgeSet;
 	string name;
 	Edge(Vertex<T> *d, double w, T id, string name);
 	friend class Graph<T>;
@@ -160,7 +162,8 @@ public:
 		return dest->getInfo();
 	}
 };
-
+template<class T>
+vector<Edge<T> *> Edge<T>::edgeSet;
 template <class T>
 Edge<T>::Edge(Vertex<T> *d, double w, T id, string name): dest(d), weight(w),id(id),name(name){}
 
@@ -184,6 +187,7 @@ class Graph {
 	int ** P;   //path
 
 public:
+
 	unsigned int nrEdges() const{
 		unsigned int acc = 0;
 

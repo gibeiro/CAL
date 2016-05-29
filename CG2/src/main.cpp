@@ -20,7 +20,8 @@ void menu(cg1 *o){
 	cout << "5 - Change vehicle space\n";
 	cout << "6 - Change vehicle number\n";
 	cout << "7 - Client info\n";
-	cout << "8 - Search client\n";
+	cout << "8 - Search client by name\n";
+	cout << "9 - Search client by destination\n";
 	cout << "0 - Exit\n";
 	cout << "Selection: ";
 }
@@ -66,11 +67,11 @@ int main(int argc, char *argv[]){
 
 	vehicle::setStatics(.5, 4);
 
-	cg1 *obj = new cg1("res/nodes.txt",
-			"res/roads.txt",
-			"res/subroads.txt",
-			"res/landmarks.txt",
-			"res/clients.txt",
+	cg1 *obj = new cg1("../res/nodes.txt",
+			"../res/roads.txt",
+			"../res/subroads.txt",
+			"../res/landmarks.txt",
+			"../res/clients.txt",
 			2
 	);
 
@@ -106,6 +107,9 @@ int main(int argc, char *argv[]){
 			break;
 		case 8:
 			obj->searchClient();
+			break;
+		case 9:
+			obj->searchDest();
 			break;
 		default:
 			break;

@@ -26,9 +26,11 @@ cg1::cg1(const char* nodes_file,
 	graph = new Graph<unsigned int>();
 	current_time = time();
 
+
 	readNodes(nodes_file);
-	vector<road> roads = readRoads(roads_file);
-	readSubroads(subroads_file, roads);
+	roads = readRoads(roads_file);
+	vector<road> tmp = roads;
+	readSubroads(subroads_file, tmp);
 	readLandmarks(landmarks_file);
 	readClients(clients_file);
 	createVehicles();
@@ -94,32 +96,19 @@ vector<road> cg1::readRoads(const char* file){
 
 	printf("Reading roads from %s\n",file);
 
-	char tmp1[256];
+	char tmp1[128];
 	char *tmp2;
 	char *name;
 	unsigned int id;
 
 	while(!stream.eof()){
 
-		stream.getline(tmp1,128);
+		stream.getline(tmp1,sizeof(tmp1));
 
 		tmp2 = strtok(tmp1,";");
 		id = atoi(tmp2);
 
 		tmp2 = strtok(NULL,";");
-
-		if(tmp2 != NULL){
-			if(!strcmp(tmp2,"True")){
-				roads.push_back(road("",1,id));
-				continue;
-			}
-
-			if(!strcmp(tmp2,"False")){
-				roads.push_back(road("",0,id));
-				continue;
-			}
-		}
-
 		name = tmp2;
 
 		tmp2 = strtok(NULL,"\n");
@@ -480,7 +469,6 @@ void cg1::addEdges(){
 	vector<Vertex<unsigned int>* >::const_iterator it1 = v1.begin();
 	vector<Edge<unsigned int> >::const_iterator it2;
 
-
 	while(it1 != v1.end()){
 
 		v2 = (*it1)->getEdges();
@@ -490,6 +478,7 @@ void cg1::addEdges(){
 
 
 			gv->addEdge(it2->getId(),(*it1)->getInfo(),it2->getDestInfo(),EdgeType::DIRECTED);
+			gv->setEdgeLabel(it2->getId(),it2->name);
 
 			it2++;
 		}
@@ -701,13 +690,14 @@ void cg1::clientInfo(){
 
 	sort(clients.begin(),clients.end());
 
-	cout  << setw(8) << "ARRIVAL" << setw(15) << "NIF"<< setw(25) << "DESTINATION\n\n";
+	cout  << setw(8) << "ARRIVAL" << setw(15) << "NIF"<< setw(30) << "DESTINATION" << setw(25) << "NAME\n\n";
 
 	for(size_t i = 0; i < clients.size(); i++){
-		cout << setw(8) << clients[i].arrival.info_s() << setw(15) << clients[i].NIF << setw(30) << clients[i].destination.name << endl;
+		cout << setw(8) << clients[i].arrival.info_s() << setw(15) << clients[i].NIF << setw(30) << clients[i].destination.name << setw(25) << clients[i].name <<endl;
 	}
 
 	system("pause");
+
 
 }
 
@@ -741,7 +731,7 @@ void cg1::searchClient(){
 		else{
 			distance = levenshtein_distance(it1->name,client_name);
 
-			if( (size_t) distance <= client_name.size() - 1)
+			if( (size_t) distance <= client_name.size()/2)
 				aprox.push_back(it1->name);
 		}
 
@@ -769,6 +759,104 @@ void cg1::searchClient(){
 	system("pause");
 
 }
+
+void cg1::searchDest(){
+	system("cls");
+
+	cin.ignore(1000,'\n');
+
+	cout << "Adress name? ";
+
+	string adress_name;
+	getline(cin,adress_name);
+
+	cout << endl;
+
+	vector<string> v_tkn1;
+	char tmp[128];
+	string biggest_token = "";
+	strcpy(tmp,adress_name.c_str());
+	for(char *tkn = strtok(tmp," "); tkn != NULL; tkn = strtok(NULL," "))
+		if(strlen(tkn) > biggest_token.size())
+			biggest_token = string(tkn);
+
+	std::vector<string> exact;
+	std::vector<string> aprox;
+	std::vector<int> substr;
+
+	std::vector<Edge<unsigned int> *>::iterator it_edge;
+	std::vector<landmark>::const_iterator it_landmark;
+	std::vector<client>::iterator it_client;
+
+	it_edge = Edge<unsigned int>::edgeSet.begin();
+
+	while(it_edge != Edge<unsigned int>::edgeSet.end()){
+
+
+		substr = KMP((*it_edge)->name,adress_name);
+
+		//Exact match found
+		if(substr.size() > 0){
+			it_landmark = find(landmarks.begin(),landmarks.end(),(*it_edge)->getDestInfo());
+			if(it_landmark != landmarks.end()){
+				it_client = clients.begin();
+				while( (it_client = find(it_client,clients.end(),(*it_landmark))) != clients.end() ){
+					exact.push_back((*it_edge)->name + "\t" + it_client->name);
+					it_client++;
+				}
+			}
+		}
+		else{
+			v_tkn1.clear();
+			strcpy(tmp,(*it_edge)->name.c_str());
+			for(char *tkn = strtok(tmp," "); tkn; tkn = strtok(NULL," "))
+				v_tkn1.push_back(string(tkn));
+
+			int distance = 2147483647;
+			for(size_t j = 0; j < v_tkn1.size();j++){
+				int k = levenshtein_distance(biggest_token,v_tkn1[j]);
+				if(distance > k)
+					distance = k;
+			}
+
+			//Aproximate match found
+			if( (size_t) distance <= biggest_token.size()/2){
+				it_landmark = find(landmarks.begin(),landmarks.end(),(*it_edge)->getDestInfo());
+				if(it_landmark != landmarks.end()){
+					it_client = clients.begin();
+					while( (it_client = find(it_client,clients.end(),(*it_landmark))) != clients.end() ){
+						aprox.push_back((*it_edge)->name + "\t" + it_client->name);
+						it_client++;
+					}
+				}
+			}
+		}
+
+		(++it_edge)++;
+	}
+
+	size_t j;
+	if( (j = exact.size()) > 0){
+		cout << "Exact matches:" << endl;
+		for(size_t i = 0; i < j; i++)
+			cout << exact[i] << endl;
+		cout << endl;
+	}
+
+	size_t k;
+	if( (k = aprox.size()) > 0){
+		cout << "Aproximate matches:" << endl;
+		for(size_t i = 0; i < k; i++)
+			cout << aprox[i] << endl;
+		cout << endl;
+	}
+
+	if(j+k == 0)
+		cout << "No matches found.\n\n";
+
+	system("pause");
+}
+
 
 
 void cg1::blockRoad(){

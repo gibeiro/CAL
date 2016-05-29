@@ -1,40 +1,40 @@
-0;;True
-1;;True
-2;;True
-3;;True
-4;;True
-5;;True
-6;;True
-7;;True
-8;;True
-9;;True
-10;;True
-11;;True
-12;;True
-13;;True
-14;;True
-15;;True
-16;;True
-17;;True
-18;;True
-19;;True
-20;;True
-21;;True
-22;;True
-23;;True
-24;;True
-25;;True
-26;;True
-27;;True
-28;;True
-29;;True
-30;;True
-31;;True
-32;;True
-33;;True
-34;;True
-35;;True
-36;;True
-37;;True
-38;;True
-39;;True
+0;Avenida dos Aliados;True
+1;Rua do Almada;True
+2;Rua Escura;True
+3;Rua das Flores;True
+4;Alameda das Fontainhas;True
+5;Avenida da Franca;True
+6;Rua de Dr Roberto Frias;True
+7;Rua do Comercio do Porto;True
+8;Rua da Constituicao;True
+9;Rua de Costa Cabral;True
+10;Rua de Nove de Julho;True
+11;Avenida de Nun'Alvares Pereira;True
+12;Rua de Passos Manuel;True
+13;Rua do Rosario;True
+14;Rua do Loureiro;True
+15;Rua de Sa da Bandeira;True
+16;Rua de Sant'Ana;True
+17;Rua de Santa Catarina;True
+18;Rua de Sao Bento da Vitoria;True
+19;Rua de Sao Miguel;True
+20;Rua de Sao Roque da Lameira;True
+21;Rua das Taipas;True
+22;Rua de Tras;True
+23;Rua de Trinta e Um de Janeiro;True
+24;Escadas das Verdades;True
+25;Rua de Mouzinho da Silveira;True
+26;Rua de Mota Pinto;True
+27;Rua de Miguel Bombarda;True
+28;Rua dos Mercadores;True
+29;Avenida do Marechal Gomes da Costa;True
+30;Rua do Major David Magno;True
+31;Rua de Jose Falcao;True
+32;Rua da Galeria de Paris;True
+33;Rua de D. Hugo;True
+34;Escadas do Codecal;True
+35;Rua dos Clerigos;True
+36;Rua de Cedofeita;True
+37;Rua do Carvalhido;True
+38;Rua das Carmelitas;True
+39;Rua de Candido dos Reis;True

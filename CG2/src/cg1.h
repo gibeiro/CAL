@@ -16,6 +16,10 @@ public:
 	bool operator==(const unsigned int &n) const{
 		return node == n;
 	}
+	template<class T>
+	bool operator==(const Vertex<T> *v) const{
+		return node == v->getInfo();
+	}
 	landmark(string s, unsigned int n):name(s),node(n){};
 	landmark():name(""),node(-1){};
 };
@@ -56,6 +60,10 @@ public:
 
 	bool operator==(const string &s) const{
 		return name == s;
+	}
+
+	bool operator==(const landmark &l) const{
+		return destination.name == l.name;
 	}
 
 
@@ -111,6 +119,7 @@ private:
 	vector<client> clients;
 	vector<vehicle> vehicles;
 	GraphViewer * gv;
+	vector<road> roads;
 
 	landmark airport;
 	time current_time;
@@ -136,6 +145,7 @@ public:
 	bool addClient();
 	void clientInfo();
 	void searchClient();
+	void searchDest();
 
 
 	size_t frstAvailableVehicle() const{
