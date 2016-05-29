@@ -4,6 +4,7 @@ Dependencias:
 *Ambos os programas estão instalados nos computadores da faculdade
 
 Compilar/Correr:
--Abrir terminal na pasta do projecto (SHIFT+RightClick > "Open command window here");
--Escrever "Make";
+-Confirmar no Makefile a diretoria MINGW_DIR (por defeito, "C:/MinGW")
+-Abrir terminal na pasta do projecto (SHIFT+RightClick > "Open command window here")
+-Usar o comando "Make"
 -Correr o executável CG2.exe na pasta "bin"
